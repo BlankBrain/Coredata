@@ -15,8 +15,11 @@ class ViewController: UIViewController {
     @IBOutlet weak var personAgeInput: UITextField!
     @IBOutlet weak var personNameOutputt: UILabel!
     @IBOutlet weak var personAgeOutput: UILabel!
-    
-    
+    @IBOutlet weak var updatePersonName: UITextField!
+    @IBOutlet weak var updatePersonAge: UITextField!
+    @IBOutlet weak var updateMessage: UILabel!
+    @IBOutlet weak var deletePersonName: UITextField!
+    @IBOutlet weak var deleteMessage: UILabel!
     
     var people = [Person]()
     
@@ -40,6 +43,47 @@ class ViewController: UIViewController {
         showAllPerson()
         
     }
+    
+    @IBAction func updatePersonClicked(_ sender: Any) {
+        
+        
+    }
+    
+    @IBAction func deletePersonClicked(_ sender: Any) {
+        
+        let fetchRequest : NSFetchRequest<Person> = Person.fetchRequest()
+        fetchRequest.predicate = NSPredicate(format: "name like %@", self.deletePersonName.text!)
+        do{
+            let people = try PersistanceServic.context.fetch(fetchRequest)
+            self.people = people
+            for person in people {
+                print(person.name)
+                PersistanceServic.context.delete(person)
+                 PersistanceServic.saveContext()
+            }
+           
+               showAllPerson()
+            
+//            let personToDelete = people.first(where:{$0.name == self.deletePersonName.text!})
+//            self.deleteMessage.text = personToDelete!.name
+//            self.personNameInput.text = ""
+//            self.personAgeOutput.text = ""
+//            self.deletePersonName.text = ""
+//            PersistanceServic.context.delete(personToDelete!)
+//            PersistanceServic.saveContext()
+//            showAllPerson()
+            
+            //let resultPredicate = NSPredicate(format: "name = %@", self.deletePersonName.text!)
+      
+            
+            
+            
+        }catch{
+            print("error loading users !")
+        }
+        
+    }
+    
     
     func showAllPerson()  {
         let fetchRequest : NSFetchRequest<Person> = Person.fetchRequest()
